@@ -6,6 +6,7 @@ const router = Router()
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret'
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
+const API_BASE = process.env.CLIENT_URL || 'http://localhost:3001'
 
 function makeToken(userId: number): string {
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' })
@@ -39,8 +40,8 @@ router.get('/github', (_req: Request, res: Response) => {
     res.status(500).json({ error: 'GitHub OAuth not configured' })
     return
   }
-  const redirectUri = `${process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : 'http://localhost:3001'}/api/auth/oauth/github/callback`
-  const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user:email`
+  const redirectUri = `${API_BASE}/api/auth/oauth/github/callback`
+  const url = `https://github.com/login/oauth/authorize?client_id=${clientId.trim()}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user:email`
   res.redirect(url)
 })
 
