@@ -4,6 +4,7 @@ import authRoutes from './routes/auth'
 import todoRoutes from './routes/todos'
 import categoryRoutes from './routes/categories'
 import tagRoutes from './routes/tags'
+import oauthRoutes from './routes/oauth'
 
 const app = express()
 
@@ -11,6 +12,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/api/auth', authRoutes)
+app.use('/api/auth/oauth', oauthRoutes)
 app.use('/api/todos', todoRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/tags', tagRoutes)
