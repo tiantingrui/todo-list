@@ -5,8 +5,8 @@ import { prisma } from '../lib/prisma'
 const router = Router()
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret'
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
-const API_BASE = process.env.CLIENT_URL || 'http://localhost:3001'
+const CLIENT_URL = (process.env.CLIENT_URL || 'http://localhost:5173').trim()
+const API_BASE = (process.env.CLIENT_URL || 'http://localhost:3001').trim()
 
 function makeToken(userId: number): string {
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' })
