@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  password   String
+  name       String
+  todos      Todo[]
+  categories Category[]
+  tags       Tag[]
+  createdAt  DateTime   @default(now())
+}
+
+model Todo {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  completed   Boolean   @default(false)
+  priority    String    @default("MEDIUM")
+  dueDate     DateTime?
+  position    Int       @default(0)
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags        Tag[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([position])
+}
+
+model Category {
+  id     Int    @id @default(autoincrement())
+  name   String
+  color  String @default("#6B7280")
+  userId Int
+  user   User   @relation(fields: [userId], references: [id])
+  todos  Todo[]
+
+  @@index([userId])
+}
+
+model Tag {
+  id     Int    @id @default(autoincrement())
+  name   String
+  userId Int
+  user   User   @relation(fields: [userId], references: [id])
+  todos  Todo[]
+
+  @@index([userId])
+}
