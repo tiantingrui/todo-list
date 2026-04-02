@@ -8,8 +8,10 @@ import TodoForm from '../components/TodoForm'
 import TodoList from '../components/TodoList'
 import FilterBar from '../components/FilterBar'
 import CategorySidebar from '../components/CategorySidebar'
+import { useToast } from '../components/Toast'
 
 export default function HomePage() {
+  const toast = useToast()
   const [categories, setCategories] = useState<Category[]>([])
   const [tags, setTags] = useState<Tag[]>([])
   const [filters, setFilters] = useState<TodoFilters>({})
@@ -66,8 +68,11 @@ export default function HomePage() {
               categories={categories}
               tags={tags}
               onSubmit={async (data) => {
-                await addTodo(data)
-                setShowForm(false)
+                try {
+                  await addTodo(data)
+                  setShowForm(false)
+                  toast.success('Todo added')
+                } catch { toast.error('Failed to add todo') }
               }}
               onCancel={() => setShowForm(false)}
             />
@@ -87,8 +92,14 @@ export default function HomePage() {
               todos={todos}
               categories={categories}
               tags={tags}
-              onUpdate={async (id, updates) => { await updateTodo(id, updates) }}
-              onDelete={removeTodo}
+              onUpdate={async (id, updates) => {
+                try { await updateTodo(id, updates); toast.success('Todo updated') }
+                catch { toast.error('Failed to update todo') }
+              }}
+              onDelete={async (id) => {
+                try { await removeTodo(id); toast.success('Todo deleted') }
+                catch { toast.error('Failed to delete todo') }
+              }}
               onReorder={reorder}
             />
           )}
